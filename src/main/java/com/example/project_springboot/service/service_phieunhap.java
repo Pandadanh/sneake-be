@@ -2,6 +2,7 @@ package com.example.project_springboot.service;
 
 import com.example.project_springboot.model.tbl_chitiet_pn;
 import com.example.project_springboot.model.tbl_danhmuc;
+import com.example.project_springboot.model.tbl_nhacungcap;
 import com.example.project_springboot.model.tbl_nhanhieu;
 import com.example.project_springboot.model.tbl_phieunhap;
 import com.example.project_springboot.model.tbl_pro_soluong;
@@ -10,6 +11,7 @@ import com.example.project_springboot.model.tbl_size;
 import com.example.project_springboot.model.tbl_users;
 import com.example.project_springboot.repositories.chitietphieunhapRepositories;
 import com.example.project_springboot.repositories.danhmucRepositories;
+import com.example.project_springboot.repositories.nhacungcapRepositores;
 import com.example.project_springboot.repositories.nhanhieuRepositories;
 import com.example.project_springboot.repositories.phieunhapRepositories;
 import com.example.project_springboot.repositories.proSoLuongRepositories;
@@ -30,6 +32,9 @@ public class service_phieunhap implements rules_service<tbl_phieunhap> {
 
     @Autowired
     private nhanhieuRepositories nhanhieuRepositories;
+
+    @Autowired
+    private nhacungcapRepositores nhacungcapRepositores;
 
     @Autowired
     private danhmucRepositories danhmucRepositories;
@@ -62,17 +67,22 @@ public class service_phieunhap implements rules_service<tbl_phieunhap> {
         return chiTietPhieuNhapRepository.findAll();
     }
 
-    public String createChiTietPhieuNhap(String tongtien,int tongsl, List<Map<String, Object>>  cartItems) {
+    public String createChiTietPhieuNhap(String tongtien,int tongsl, List<Map<String, Object>>  cartItems,String id_ncc,String id_nv) {
         String error = "";
         LocalDate currentDate = LocalDate.now();
 
     tbl_phieunhap new_phieunhap = new tbl_phieunhap();
-    tbl_users nhanvien = userRepositories.findByIdUser(1);
+    tbl_users nhanvien = userRepositories.findByIdUser(Integer.parseInt(id_nv));
+
+    tbl_nhacungcap nhacungcap = nhacungcapRepositores.findById(Integer.valueOf(id_ncc)).get();
+
     new_phieunhap.setNhanvien(nhanvien);
     new_phieunhap.setNgaynhap(currentDate);
     new_phieunhap.setTongsl(tongsl);
     new_phieunhap.setTinhtrang(0);
     new_phieunhap.setTongTien(tongtien);
+    new_phieunhap.setNhacungcap(nhacungcap);
+
 
     tbl_phieunhap new_success = phieuNhapRepository.save(new_phieunhap);
 

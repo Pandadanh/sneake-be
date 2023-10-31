@@ -3,9 +3,11 @@ package com.example.project_springboot.controllers.controller_admin;
 import com.example.project_springboot.model.ResponseObject;
 import com.example.project_springboot.model.tbl_chitiet_pn;
 import com.example.project_springboot.model.tbl_danhmuc;
+import com.example.project_springboot.model.tbl_nhacungcap;
 import com.example.project_springboot.model.tbl_nhanhieu;
 import com.example.project_springboot.model.tbl_size;
 import com.example.project_springboot.service.service_danhmuc;
+import com.example.project_springboot.service.service_nhacungcap;
 import com.example.project_springboot.service.service_nhanhieu;
 import com.example.project_springboot.service.service_phieunhap;
 import com.example.project_springboot.service.service_size;
@@ -37,6 +39,9 @@ public class controller_admin_phieunhap {
     @Autowired
     private service_danhmuc service_danhmuc ;
 
+    @Autowired
+    private service_nhacungcap service_nhacungcap ;
+
     public controller_admin_phieunhap() {
     }
 
@@ -45,16 +50,38 @@ public class controller_admin_phieunhap {
         return service_phieunhap.getAllChiTietPhieuNhap();
     }
 
+
     @PostMapping("/create")
     public ResponseEntity<ResponseObject> createChiTietPhieuNhap(@RequestBody Map<String,?> chiTietPhieuNhap) {
 
         String tongtien = (String) chiTietPhieuNhap.get("tongtien");
+
         String tongsl = (String) chiTietPhieuNhap.get("tongsl");
+
         int tongsl_int = Integer.parseInt(tongsl);
+        String id_ncc ;
+
+        try {
+             id_ncc = (String) chiTietPhieuNhap.get("nhacungcap");
+        }catch (Exception e){
+
+            Integer temp = (Integer) chiTietPhieuNhap.get("nhacungcap");
+            id_ncc = String.valueOf(temp);
+        }
+        String id_nv ;
+        try {
+             id_nv = (String) chiTietPhieuNhap.get("idUser");
+        }catch (Exception e){
+
+            Integer temp = (Integer) chiTietPhieuNhap.get("idUser");
+            id_nv = String.valueOf(temp);
+        }
+
+
 
         List<Map<String, Object>> cartItems = (List<Map<String, Object>>) chiTietPhieuNhap.get("phieunhap");
 
-        String error = service_phieunhap.createChiTietPhieuNhap( tongtien, tongsl_int, cartItems);
+        String error = service_phieunhap.createChiTietPhieuNhap( tongtien, tongsl_int, cartItems ,id_ncc , id_nv);
 
         if (error.equals("")) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -72,6 +99,21 @@ public class controller_admin_phieunhap {
         tbl_size error = service_size.findbySize(size);
 
         if (error.getSize() != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Successfully inserter","",error)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            new ResponseObject("Faill", "fail")
+        );
+    }
+
+    @GetMapping("/show-nhacungcap")
+    public ResponseEntity<ResponseObject> show_nhacungcap( ) {
+
+        List<tbl_nhacungcap> error = service_nhacungcap.showall();
+
+        if (error.size() >0) {
             return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Successfully inserter","",error)
             );

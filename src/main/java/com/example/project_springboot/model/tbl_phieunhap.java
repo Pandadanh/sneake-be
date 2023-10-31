@@ -35,28 +35,41 @@ public class tbl_phieunhap {
     @Column(name = "tinhtrang")
     private int tinhtrang;
 
+    @ManyToOne
+    @JoinColumn(name = "id_ncc")
+    private tbl_nhacungcap nhacungcap ;
     public tbl_phieunhap() {
 
     }
 
     public tbl_phieunhap(tbl_users nhanvien, String tongTien, LocalDate ngaynhap, int tongsl,
-        int tinhtrang) {
+        int tinhtrang , tbl_nhacungcap nhacungcap) {
         this.nhanvien = nhanvien;
         this.tongTien = tongTien;
         this.ngaynhap = ngaynhap;
         this.tongsl = tongsl;
         this.tinhtrang = tinhtrang;
+        this.nhacungcap = nhacungcap;
     }
 
     public tbl_phieunhap(int idPn, tbl_users nhanvien, String tongTien, LocalDate ngaynhap,
         int tongsl,
-        int tinhtrang) {
+        int tinhtrang ,tbl_nhacungcap nhacungcap) {
         this.idPn = idPn;
         this.nhanvien = nhanvien;
         this.tongTien = tongTien;
         this.ngaynhap = ngaynhap;
         this.tongsl = tongsl;
         this.tinhtrang = tinhtrang;
+        this.nhacungcap = nhacungcap;
+    }
+
+    public tbl_nhacungcap getNhacungcap() {
+        return nhacungcap;
+    }
+
+    public void setNhacungcap(tbl_nhacungcap nhacungcap) {
+        this.nhacungcap = nhacungcap;
     }
 
     public int getIdPn() {
